@@ -6,7 +6,8 @@
    (setq P (port P))
    (gc)
    (loop
-	  (setq *Sock (listen P))
+      (setq *Sock (listen P))
+      (and reload (reload))
       (NIL (fork) (close P))
       (close *Sock) )
    (scgi *Sock)
@@ -46,24 +47,20 @@
                   (querypack (car F))
                   (cadr F) ) ) ) ) ) )
 
-(de handle-url (Fun . Pat)
+(de dh A
    (push '*UrlHandlers
       (cons
-         (mapcan '((X) (or
-                          (and (pat? X) (list @))
-                          (chop X) ) ) Pat ) 
-         Fun
-         (mapcar '((X) (or
-                          (pre? '@* X)
-                          (list 'pack X) ) ) 
-            (filter pat? Pat) ) ) ) )
+         (mapcan
+            '[(X)
+              (or (and (pat? X) (list @)) (chop X))] (car A) )
+         (cdr A) ) ) )
 
 (de req-handler ()
    (let URL (chop (ht:Pack (cgienv "SCRIPT_URL")))
       (for Handler *UrlHandlers
          (T
             (if (match (car Handler) URL)
-               (eval (cdr Handler)) ) ) ) ) )
+               (run (cdr Handler)) ) ) ) ) )
 
 (de res-header (Stat Typ Upd . Prg)
    (prinl "Status: " (or Stat "200 OK") "^M")
@@ -94,35 +91,44 @@ Start a SCGI server in the specified port." )
 (document
    'scgi "(scgi 'Socket)
 
-Handle a SCGI connection. Read and parse the request header from the specified
-socket, set '*CGIEnv with the environment variables passed in the request and
-then call 'req-handler to process it." )
+Handle a SCGI connection. Read and parse the request header from the
+specified socket, set '*CGIEnv with the environment variables passed
+in the request and then call 'req-handler to process it." )
 
 (document
    'req-handler "(req-handler)
 
-Handle a SCGI request. Go trough all '*UrlHandlers and execute the first one
-that matches the SCRIPT_URL in '*CGIEnv. The handler is passed all parameters
-extracted from the URL pattern match, see 'handle-url for more information
-on them. Override this function for custom request handling." )
+Handle a SCGI request. Go trough all '*UrlHandlers and execute the
+first one that matches the SCRIPT_URL in '*CGIEnv. The handler is
+passed all parameters extracted from the URL pattern match, see
+'handle-url for more information on them. Override this function for
+custom request handling." )
 
 (document
-   'handle-url "(handle-url 'Fun 'Delim . 'Pat)
+   'dh "(dh pat . prg)
 
-Register an URL handler. Fun specifies a function to be called when the default
-'req-handler matches the pattern that follows. The format and behavior of this
-pattern is similar to that of 'match (in fact it uses it internally). The URL
-string only matches the whole pattern, variables can be specified with symbols
-starting in @.
+Define a URL handler. When the default 'req-handler matches pat the
+prg body is executed. The format and behavior of this pattern is
+similar to that of 'match (in fact it uses it internally). The URL
+string only matches the whole pattern, variables can be specified with
+symbols starting in @.
 
-  (handle-url 'mainpage \"/\")
-  (handle-url 'news-index \"/news\")
-  (handle-url 'story \"/news/story/\" @S)
+Examples:
+
+  (dh (\"/\")
+     (html 0 \"Hello\" NIL NIL
+        (<h1> NIL \"Hello World!\") ) )
+
+  (dh (\"/news/story/\" @S)
+     (html 0 \"News \" NIL NIL
+        (<h1> NIL \"Showing News Story: \" @S) ))
 
 Notes:
+
 * URL matching is done in the inverse order of which the handlers were
-  registered, and it stops trying as soon as the first handler succeeds.
-  Thus, to achieve correct behavior you should register the most general
-  handlers first and then register more specific ones.
-* A successful handler must return non-NIL, otherwise the next one will be
-  tried." )
+defined, and it stops trying as soon as the first handler succeeds.
+Thus, to achieve correct behavior you should define the most general
+handlers first and then register more specific ones.
+
+* A successful handler must return non-NIL, otherwise the next one
+will be tried." )

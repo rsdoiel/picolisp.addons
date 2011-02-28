@@ -3,28 +3,28 @@
 (load "../lib/scgi.l")
 (load "@lib/xhtml.l")
 
-(de notfound (Url) 
+(dh ("/" @Url)
    (setq *HTTPStatus "404 Not Found")
    (html 0 "Not found" NIL NIL
-      (<h1> NIL "The page '" Url "' could not be found.") 
+      (<h1> NIL "The page '" @Url "' could not be found.") 
       (<pre> NIL
          (for V *CGIEnv
             (print V) (prinl)) (prinl)
          (pretty (read-request)) (prinl)
          (pretty (parse-query))) ) ) 
 
-(de mainpage ()
+(dh ("/")
    (html 0 "Hello" NIL NIL
       (<h1> NIL "OHAI WORLD!")) )
 
-(de deepthought (Question)
+(dh ("/deephought/" @Question)
    (html 0 "Deep Thought says" NIL NIL
-      (if (= "answer-to-life" Question)
+      (if (= "answer-to-life" (pack @Question))
          (<h1> NIL "42")
          (<h2> NIL "I don't know.") ) ) )
 
-(handle-url 'notfound @URL)
-(handle-url 'mainpage "/")
-(handle-url 'deepthought "/deepthought/" @Q)
+(de go ()
+   (server 9001) )
 
-(server 9001)
+(load T)
+(prinl "Type (go) to start the scgi server in port 9001")
