@@ -1,6 +1,6 @@
 #!/usr/bin/env p
 
-(load "../lib/scgi.l")
+(load "@opt/scgi.l")
 (load "@lib/xhtml.l")
 
 (dh ("/" @Url)
