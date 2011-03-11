@@ -1,4 +1,4 @@
-#30jan11jir
+#04mar11jir
 # (c) Jose I. Romero
 (on *Doc)
 
@@ -10,9 +10,9 @@
 
 (de sig (Sym)
    (with Sym
-      (let Lines (split (chop (: *Doc)) "^J" )
+      (let Lines (split (chop (: *Doc)) "^J")
          (while (pop 'Lines)
-            (prinl @)) ) ) T )
+            (prinl @) ) ) ) T )
 
 (document
    'document "(document 'sym docstring) -> docstring
@@ -31,7 +31,7 @@ Display the documentation of sym.
 
   : (document 'foo \"(foo 'bar) -> any^J^JFoo the bar. Bar must bam baz.\")
   -> \"(foo 'bar) -> any^J^JFoo the bar. Bar must bam baz.\"
-  :  (help 'foo)
+  : (help 'foo)
   (foo 'bar) -> any
   
   Foo the bar. Bar must bam baz.
@@ -45,6 +45,6 @@ body by an empty line.
 
   : (document 'foo \"(foo 'bar) -> any^J^JFoo the bar. Bar must bam baz.\")
   -> \"(foo 'bar) -> any^J^JFoo the bar. Bar must bam baz.\"
-  : (sig 'foo)                                                           
+  : (sig 'foo)
   (foo 'bar) -> any
   -> T" )
