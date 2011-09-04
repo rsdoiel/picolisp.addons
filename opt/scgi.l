@@ -1,6 +1,6 @@
 # 29jan11jir
 # (c) Jose I. Romero
-(setq *UrlHandlers)
+# *CGIEnv
 
 (de server (P)
    (setq P (port P))
@@ -23,63 +23,12 @@
                     (while (car "Header")
                        (link (cons
                                 (pack (pop '"Header"))
-                                (pop '"Header") ) ) ) ) )
+                                (pack (pop '"Header")) ) ) ) ) )
       (char) ) # Drop comma
    (out S (req-handler)) )
 
 (de cgienv (Key)
    (cdr (assoc Key *CGIEnv)) )
-
-(de read-request ()
-   (make
-      (do (format (pack (cgienv "CONTENT_LENGHT")))
-         (link (char (rd 1))) ) ) )
-
-(de querypack (Q)
-   (ht:Pack (replace Q "+" " ")))
-
-(de parse-query ()
-   (let Q (split (chop (cgienv "QUERY_STRING")) ";" "&")
-      (make
-         (while (setq F (split (pop 'Q) "="))
-            (link
-               (cons
-                  (querypack (car F))
-                  (cadr F) ) ) ) ) ) )
-
-(de dh A
-   (push '*UrlHandlers
-      (cons
-         (mapcan
-            '[(X)
-              (or (and (pat? X) (list @)) (chop X))] (car A) )
-         (cdr A) ) ) )
-
-(de req-handler ()
-   (let URL (chop (ht:Pack (cgienv "SCRIPT_URL")))
-      (for Handler *UrlHandlers
-         (T
-            (if (match (car Handler) URL)
-               (run (cdr Handler)) ) ) ) ) )
-
-(de res-header (Stat Typ Upd . Prg)
-   (prinl "Status: " (or Stat "200 OK") "^M")
-   (prinl "Content-type: " (or Typ "text/plain") "^M")
-   (when Upd
-      (prinl "Cache-Control: max-age=" Upd "^M")
-      (when (=0 Upd)
-         (prinl "Cache-Control: private, no-store, no-cache^M") ) )
-   (run Prg)
-   (prinl "^M") )
-
-# http.l compatibility layer
-
-(de httpHead (Typ Upd File Att)
-   (res-header *HTTPStatus (or Typ "text/html; charset=utf-8") Upd) )
-
-(def 'sesId prog) # Url sesId not implemented
-(def 'baseHRef nil) # Not necessary, call depends on *Port and *Host
-(def 'srcUrl prog) # Override this for another source URL
 
 `*Doc
 
