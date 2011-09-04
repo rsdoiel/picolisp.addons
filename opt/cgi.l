@@ -26,9 +26,8 @@
               (or (and (pat? X) (list @)) (chop X))] (car A) )
          (cdr A) ) ) )
 
-(de req-handler ()
-   (let URL (or (chop (cgienv "SCRIPT_URL"))
-               (car (split (chop (cgienv "REQUEST_URI")) "?")) ) 
+(de req-handler () 
+   (let URL (chop (cgienv "PATH_INFO") ) 
       (for Handler *UrlHandlers
          (T
             (if (match (car Handler) URL)

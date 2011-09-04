@@ -1,4 +1,4 @@
-#!/usr/bin/env p
+#!/usr/bin/env pil
 
 (load "@opt/scgi.l" "@opt/cgi.l")
 (load "@lib/xhtml.l")
