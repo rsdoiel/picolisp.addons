@@ -17,7 +17,7 @@
    (html 0 "Hello" NIL NIL
       (<h1> NIL "OHAI WORLD!")) )
 
-(dh ("/deephought/" @Question)
+(dh ("/deepthought/" @Question)
    (html 0 "Deep Thought says" NIL NIL
       (if (= "answer-to-life" (pack @Question))
          (<h1> NIL "42")
