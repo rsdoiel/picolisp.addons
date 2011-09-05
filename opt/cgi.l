@@ -1,6 +1,10 @@
+# 05sep11jir
+# (c) Jose I. Romero
+# *UrlHandlers
+
 (de read-request ()
    (make
-      (do (format (pack (cgienv "CONTENT_LENGHT")))
+      (do (format (cgienv "CONTENT_LENGHT"))
          (link (char (rd 1))) ) ) )
 
 (de querypack (Q)
