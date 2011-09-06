@@ -4,7 +4,7 @@
 
 (de read-request ()
    (make
-      (do (format (cgienv "CONTENT_LENGHT"))
+      (do (format (cgienv "CONTENT_LENGTH"))
          (link (char (rd 1))) ) ) )
 
 (de querypack (Q)
