@@ -13,10 +13,10 @@
 (de url-decode (Q)
    (mapcar
       '[(F)
-        (setq F (split F "=")
+        (let Field (split F "=")
            (cons
-              (querypack (car F))
-              (querypack (cadr F)) ) ) ] 
+              (querypack (car Field))
+              (querypack (cadr Field)) ) ) ] 
       (split (chop Q) ";" "&") ) )
 
 (de parse-query ()
