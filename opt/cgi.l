@@ -1,11 +1,10 @@
-# 05sep11jir
+# 06sep11jir
 # (c) Jose I. Romero
 # *UrlHandlers
 
 (de read-request ()
-   (make
-      (do (format (cgienv "CONTENT_LENGTH"))
-         (link (char (rd 1))) ) ) )
+   (in *Sock
+      (ht:Read (format (cgienv "CONTENT_LENGTH"))) ) )
 
 (de querypack (Q)
    (ht:Pack (replace Q "+" " ")))

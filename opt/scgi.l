@@ -1,6 +1,6 @@
-# 05sep11jir
+# 06sep11jir
 # (c) Jose I. Romero
-# *CGIEnv
+# *CGIEnv *Sock
 
 (de server (P)
    (setq P (port P))
